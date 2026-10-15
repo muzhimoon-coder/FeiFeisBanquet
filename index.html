@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f6f2ef" />
+    <meta name="description" content="个人作品集：前菜、热菜、汤菜、主食、点心、水果。" />
+    <title>作品集</title>
+    <link rel="icon" href="data:," />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <header class="site-nav" aria-label="主要导航">
+      <a class="site-brand" href="#cover" data-section="cover" aria-label="狒狒的宴会，返回封面">
+        <img src="素材/狒狒的宴会.png" width="2757" height="512" alt="狒狒的宴会" />
+      </a>
+      <nav class="site-nav-links" aria-label="页面导航">
+        <a href="#about" data-section="about">主厨介绍</a>
+        <a href="#portfolio" data-section="portfolio" data-slide="0">菜品</a>
+        <a href="#contact" data-section="portfolio" data-slide="6">联系方式</a>
+      </nav>
+    </header>
+
+    <main id="page-scroll">
+      <section class="page-section cover" id="cover" aria-label="作品集封面">
+        <div class="cover-canvas canvas">
+          <img class="cover-title" src="assets/decor/cover-title-20261013-v2.webp" width="1100" height="421" decoding="async" alt="今天也做了一桌「好内容」" />
+          <img class="cover-scene" src="assets/decor/cover-scene-20261013-v2.webp" width="3600" height="2186" fetchpriority="high" decoding="async" alt="餐盘、餐具与手绘厨师组成的作品集封面" />
+          <a class="cover-next" href="#about" aria-label="向下浏览自我介绍">
+            <img src="assets/decor/cover-next-20261013-v2.webp" width="1050" height="654" decoding="async" alt="向下浏览" />
+          </a>
+        </div>
+      </section>
+
+      <section class="page-section about" id="about" aria-labelledby="about-title">
+        <h1 class="sr-only" id="about-title">主厨介绍</h1>
+        <div class="about-canvas canvas">
+          <img class="page-art" src="assets/pages/about-20261013-v3.webp" width="3840" height="2160" decoding="async" alt="主厨罗慧的自我介绍：一个爱琢磨问题，也爱琢磨画面的编导。" />
+        </div>
+      </section>
+
+      <section class="page-section portfolio" id="portfolio" aria-label="作品展示">
+        <div class="carousel" id="carousel" aria-roledescription="轮播" aria-label="六个作品和联系方式">
+          <div class="carousel-track" id="carousel-track"></div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
