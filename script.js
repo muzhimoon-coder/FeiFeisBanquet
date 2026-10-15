@@ -279,6 +279,37 @@ const slides = [...track.children];
 const slideImages = slides.map(slide => [...slide.querySelectorAll('img')]);
 const decodeStarted = new WeakSet();
 
+const carouselControls = document.createElement('nav');
+carouselControls.className = 'carousel-controls';
+carouselControls.setAttribute('aria-label', '作品翻页');
+carouselControls.setAttribute('aria-hidden', 'true');
+
+const previousButton = document.createElement('button');
+previousButton.className = 'carousel-arrow carousel-arrow-previous';
+previousButton.type = 'button';
+previousButton.setAttribute('aria-label', '上一页');
+previousButton.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m15 18-6-6 6-6" /></svg>';
+
+const pageIndicator = document.createElement('span');
+pageIndicator.className = 'carousel-page';
+pageIndicator.setAttribute('role', 'status');
+pageIndicator.setAttribute('aria-live', 'polite');
+
+const nextButton = document.createElement('button');
+nextButton.className = 'carousel-arrow carousel-arrow-next';
+nextButton.type = 'button';
+nextButton.setAttribute('aria-label', '下一页');
+nextButton.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6" /></svg>';
+
+carouselControls.append(previousButton, pageIndicator, nextButton);
+document.body.append(carouselControls);
+
+function updateCarouselControls() {
+  pageIndicator.textContent = `${String(activeIndex + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+  previousButton.disabled = motionLocked || activeIndex === 0;
+  nextButton.disabled = motionLocked || activeIndex === slides.length - 1;
+}
+
 function loadNearbyImages(index) {
   for (let i = Math.max(0, index - 1); i <= Math.min(slides.length - 1, index + 1); i += 1) {
     for (const image of slideImages[i]) {
@@ -300,23 +331,29 @@ function updateActiveSlide() {
     slide.setAttribute('aria-hidden', String(inactive));
     slide.inert = inactive;
   }
+  updateCarouselControls();
 }
 
 function releaseMotionLock() {
   clearTimeout(unlockTimer);
   motionLocked = false;
   carousel.classList.remove('is-transitioning');
+  updateCarouselControls();
 }
 
 function settleAt(targetIndex, dragOffset = null) {
   if (motionLocked || targetIndex < 0 || targetIndex >= slides.length) return false;
   if (targetIndex === activeIndex && dragOffset === null) return false;
+  const slideChanged = targetIndex !== activeIndex;
   motionLocked = true;
   carousel.classList.add('is-transitioning');
   const originIndex = activeIndex;
   activeIndex = targetIndex;
   loadNearbyImages(activeIndex);
   updateActiveSlide();
+  if (slideChanged && window.matchMedia('(max-width: 980px)').matches) {
+    document.getElementById('portfolio').scrollIntoView({ behavior: 'auto', block: 'start' });
+  }
   cancelAnimationFrame(dragFrame);
   dragFrame = 0;
 
@@ -348,6 +385,9 @@ function changeBy(direction) {
   if (drag?.horizontal) return false;
   return settleAt(activeIndex + Math.sign(direction));
 }
+
+previousButton.addEventListener('click', () => changeBy(-1));
+nextButton.addEventListener('click', () => changeBy(1));
 
 loadNearbyImages(0);
 updateActiveSlide();
@@ -391,6 +431,28 @@ function normalizedWheelDelta(event) {
 
 const pageScroll = document.getElementById('page-scroll');
 const pageSections = ['cover', 'about', 'portfolio'].map(id => document.getElementById(id));
+
+function setCarouselControlsVisible(visible) {
+  carouselControls.classList.toggle('is-visible', visible);
+  carouselControls.setAttribute('aria-hidden', String(!visible));
+  document.body.classList.toggle('portfolio-controls-visible', visible);
+}
+
+if ('IntersectionObserver' in window) {
+  const controlsObserver = new IntersectionObserver(entries => {
+    setCarouselControlsVisible(entries.some(entry => entry.isIntersecting));
+  }, { root: pageScroll, rootMargin: '0px 0px -98% 0px', threshold: 0 });
+  controlsObserver.observe(pageSections[2]);
+} else {
+  const updateControlsVisibility = () => {
+    const portfolioBounds = pageSections[2].getBoundingClientRect();
+    const viewportBounds = pageScroll.getBoundingClientRect();
+    setCarouselControlsVisible(portfolioBounds.bottom > viewportBounds.top &&
+      portfolioBounds.top < viewportBounds.bottom);
+  };
+  pageScroll.addEventListener('scroll', updateControlsVisibility, { passive: true });
+  updateControlsVisibility();
+}
 
 function closestSectionIndex() {
   const viewportTop = pageScroll.getBoundingClientRect().top;

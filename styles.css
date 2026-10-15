@@ -155,6 +155,83 @@ img { display: block; }
   animation: none;
   transition: none;
 }
+.carousel-controls {
+  position: fixed;
+  z-index: 110;
+  left: 50%;
+  bottom: 14px;
+  bottom: max(14px, env(safe-area-inset-bottom));
+  min-height: 44px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  background: transparent;
+  color: #302e2c;
+  font-family: "DengXian", "Microsoft YaHei UI", "Microsoft YaHei", sans-serif;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate(-50%, 8px);
+  transition: opacity 180ms ease, transform 180ms ease, visibility 180ms;
+}
+.carousel-controls.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+}
+.carousel-arrow {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  appearance: none;
+  background: #fcfaf8;
+  color: inherit;
+  font: inherit;
+  line-height: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 180ms ease, opacity 180ms ease;
+}
+.carousel-arrow svg {
+  display: block;
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.carousel-arrow:disabled { opacity: .32; cursor: default; }
+.carousel-arrow:focus-visible {
+  outline: 2px solid #6851b9;
+  outline-offset: 3px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .carousel-arrow:not(:disabled):hover {
+    transform: translateY(-1px) scale(1.02);
+    background: #fffdfb;
+  }
+}
+.carousel-arrow:not(:disabled):active { transform: translateY(0) scale(.98); }
+.carousel-page {
+  min-width: 72px;
+  padding: 0 4px;
+  text-align: center;
+  font-size: 14px;
+  line-height: 1;
+  letter-spacing: .04em;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+}
 .work-heading {
   position: absolute;
   left: 61%; top: 12.89%; width: 14.375%; height: auto;
@@ -221,6 +298,10 @@ img { display: block; }
   transition: opacity 160ms ease;
 }
 .copy-toast.is-visible { opacity: 1; pointer-events: auto; }
+.portfolio-controls-visible .copy-toast {
+  bottom: 72px;
+  bottom: calc(72px + env(safe-area-inset-bottom));
+}
 .copy-toast input {
   width: 100%;
   margin-top: 6px;
@@ -247,8 +328,33 @@ img { display: block; }
   .site-brand { width: clamp(86px, 27vw, 112px); }
   .site-nav-links { gap: clamp(10px, 3.2vw, 20px); }
   .site-nav a { font-size: clamp(11px, 3.2vw, 14px); }
-  .about { min-height: 100%; overflow: hidden; }
-  .portfolio { min-height: 100%; overflow: hidden; }
+  .about {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+    container-type: normal;
+    contain: none;
+  }
+  .about-canvas {
+    position: relative;
+    inset: auto;
+    transform: none;
+    width: 100%;
+    height: auto;
+  }
+  .about-canvas .page-art {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+  .portfolio {
+    min-height: 100%;
+    overflow: hidden;
+    container-type: normal;
+    contain: none;
+    padding-bottom: 64px;
+    padding-bottom: calc(64px + env(safe-area-inset-bottom));
+  }
   .carousel { height: auto; overflow: hidden; }
   .carousel-track { height: auto; align-items: flex-start; }
   .work-slide { height: auto; overflow: visible; }
@@ -284,7 +390,7 @@ img { display: block; }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   #page-scroll { scroll-behavior: auto; }
-  .carousel-track, .cover-next { transition-duration: .01ms; }
+  .carousel-track, .cover-next, .carousel-controls, .carousel-arrow { transition-duration: .01ms; }
   .video-still img, .taste-link img {
     transform: none !important;
     animation: none !important;
