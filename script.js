@@ -59,7 +59,19 @@ const works = [
     highlight: '黑白题材本身很吃光影，所以拍摄时更强调明暗层次、轮廓和质感；后期则尽量让同场景样张直接并排，减少花哨包装，让差异本身成为重点。',
     result: '首次尝试手机影像题材，成片获得领导认可。',
   },
+  {
+    name: '原创',
+    foodBox: [13917, 7200, 15097, 7775],
+    title: '情绪叙事MG动画｜毕业设计',
+    url: 'https://www.bilibili.com/video/BV1iNKk6hEdE/?spm_id_from=333.1387.homepage.video_card.click&vd_source=e74fa8bb6345f2015704f9974971bca0',
+    material: '以成长中的探索、挫折与自我认知为主题，尝试用动画呈现抽象情绪。',
+    making: '独立完成选题、文稿、分镜、视觉设计、动画及后期制作，通过场景、色彩和节奏变化推动叙事。',
+    highlight: '用森林明暗、几何障碍和宇宙意象，将内心情绪转化为可感知的视觉表达。',
+    result: '独立完成约4分32秒的原创MG动画短片，实现从创意构思到最终成片的全流程制作。',
+  },
 ];
+
+const totalSlideCount = works.length + 1;
 
 const track = document.getElementById('carousel-track');
 const carousel = document.getElementById('carousel');
@@ -94,7 +106,7 @@ for (const [index, work] of works.entries()) {
   const slide = document.createElement('article');
   slide.className = 'work-slide';
   slide.setAttribute('aria-roledescription', '作品');
-  slide.setAttribute('aria-label', `${index + 1} / 7：${work.name}`);
+  slide.setAttribute('aria-label', `${index + 1} / ${totalSlideCount}：${work.name}`);
 
   const canvas = document.createElement('div');
   canvas.className = 'slide-canvas canvas';
@@ -121,11 +133,17 @@ for (const [index, work] of works.entries()) {
 
   const taste = document.createElement('a');
   taste.className = 'taste-link';
-  taste.href = work.url;
-  taste.target = '_blank';
-  taste.rel = 'noopener noreferrer';
   taste.draggable = false;
-  taste.setAttribute('aria-label', `点击品鉴：${work.title}，在新标签页打开视频`);
+  if (work.url) {
+    taste.href = work.url;
+    taste.target = '_blank';
+    taste.rel = 'noopener noreferrer';
+    taste.setAttribute('aria-label', `点击品鉴：${work.title}，在新标签页打开视频`);
+  } else {
+    taste.classList.add('is-pending');
+    taste.setAttribute('aria-disabled', 'true');
+    taste.setAttribute('aria-label', `点击品鉴：${work.title}，视频待接入`);
+  }
   const tasteImage = document.createElement('img');
   tasteImage.src = '素材/点击品鉴.png';
   tasteImage.width = 1877;
@@ -137,11 +155,17 @@ for (const [index, work] of works.entries()) {
 
   const still = document.createElement('a');
   still.className = 'video-still';
-  still.href = work.url;
-  still.target = '_blank';
-  still.rel = 'noopener noreferrer';
   still.draggable = false;
-  still.setAttribute('aria-label', `${work.title}，在新标签页打开视频`);
+  if (work.url) {
+    still.href = work.url;
+    still.target = '_blank';
+    still.rel = 'noopener noreferrer';
+    still.setAttribute('aria-label', `${work.title}，在新标签页打开视频`);
+  } else {
+    still.classList.add('is-pending');
+    still.setAttribute('aria-disabled', 'true');
+    still.setAttribute('aria-label', `${work.title}视频单帧，视频待接入`);
+  }
   const stillImage = document.createElement('img');
   stillImage.dataset.src = `assets/stills/${work.name}.webp`;
   stillImage.width = 1800;
@@ -189,7 +213,7 @@ const endingSlide = document.createElement('article');
 endingSlide.className = 'work-slide ending-slide';
 endingSlide.id = 'contact';
 endingSlide.setAttribute('aria-roledescription', '结束页');
-endingSlide.setAttribute('aria-label', '7 / 7：联系方式');
+endingSlide.setAttribute('aria-label', `${totalSlideCount} / ${totalSlideCount}：联系方式`);
 const endingCanvas = document.createElement('div');
 endingCanvas.className = 'slide-canvas canvas';
 const endingImage = document.createElement('img');

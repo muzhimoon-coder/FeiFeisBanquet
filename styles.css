@@ -120,6 +120,7 @@ img { display: block; }
   left: 92.916667%; top: 15.333333%; width: 8.75%; height: auto;
 }
 .video-still, .taste-link { position: absolute; display: block; cursor: pointer; }
+.video-still.is-pending, .taste-link.is-pending { cursor: default; }
 .video-still {
   left: 23.75%; top: 22.56%; width: 48.23%;
 }
@@ -140,10 +141,10 @@ img { display: block; }
   80% { transform: translateX(2px); }
 }
 @media (hover: hover) and (pointer: fine) {
-  .carousel:not(.is-transitioning):not(.is-dragging) .video-still:hover img {
+  .carousel:not(.is-transitioning):not(.is-dragging) .video-still:not(.is-pending):hover img {
     transform: rotate(-1.5deg) scale(1.03);
   }
-  .carousel:not(.is-transitioning):not(.is-dragging) .taste-link:hover img {
+  .carousel:not(.is-transitioning):not(.is-dragging) .taste-link:not(.is-pending):hover img {
     animation: taste-wiggle 450ms ease-in-out 1;
   }
 }
